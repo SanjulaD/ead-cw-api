@@ -3,16 +3,12 @@ using UniversityStudentTracker.API.Models.Domains;
 
 namespace UniversityStudentTracker.API.Contexts;
 
-public class StudentPerformance : DbContext
+public class StudentPerformance(DbContextOptions<StudentPerformance> dbContextOptions) : DbContext(dbContextOptions)
 {
-    public StudentPerformance(DbContextOptions<StudentPerformance> dbContextOptions) : base(dbContextOptions)
-    {
-    }
-
     public DbSet<StudySession> StudySessions { get; set; }
     public DbSet<Break> Breaks { get; set; }
     public DbSet<Prediction> Predictions { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -32,6 +28,5 @@ public class StudentPerformance : DbContext
         modelBuilder.Entity<Prediction>()
             .Property(p => p.PredictionID)
             .HasDefaultValueSql("NEWID()");
-        
     }
 }

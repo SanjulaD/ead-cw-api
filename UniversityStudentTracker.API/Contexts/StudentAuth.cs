@@ -4,13 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UniversityStudentTracker.API.Contexts;
 
-public class StudentAuth : IdentityDbContext
+public class StudentAuth(DbContextOptions<StudentAuth> options) : IdentityDbContext(options)
 {
-    public StudentAuth(DbContextOptions<StudentAuth> options) : base(options)
-    {
-        
-    }
-    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
