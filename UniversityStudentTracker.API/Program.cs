@@ -21,6 +21,7 @@ builder.Services.AddDbContext<StudentPerformance>(options => { options.UseSqlSer
 builder.Services.AddDbContext<StudentAuth>(options => { options.UseSqlServer(connectionString); });
 
 builder.Services.AddScoped<IStudySessionRepository, StudySessionService>();
+builder.Services.AddScoped<IBreaksRepository, BreaksService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

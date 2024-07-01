@@ -8,12 +8,12 @@ namespace UniversityStudentTracker.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StudySessionController : ControllerBase
+public class StudySessionsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IStudySessionRepository _studySessionRepository;
 
-    public StudySessionController(IMapper mapper, IStudySessionRepository studySessionRepository)
+    public StudySessionsController(IMapper mapper, IStudySessionRepository studySessionRepository)
     {
         _mapper = mapper;
         _studySessionRepository = studySessionRepository;
