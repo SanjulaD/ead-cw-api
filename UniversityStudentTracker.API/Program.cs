@@ -45,8 +45,18 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty; // Serve the Swagger UI at the app's root
+        c.RoutePrefix = "swagger"; // Serve the Swagger UI at the app's root
     });
+}
+
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 app.UseCors("AllowAllOrigins");
