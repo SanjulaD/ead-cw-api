@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityStudentTracker.API.Models.Domains;
 using UniversityStudentTracker.API.Models.DTO.StudySession;
@@ -8,6 +9,7 @@ namespace UniversityStudentTracker.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class StudySessionsController : ControllerBase
 {
     private readonly IMapper _mapper;

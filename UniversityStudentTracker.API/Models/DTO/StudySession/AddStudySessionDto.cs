@@ -4,9 +4,6 @@ namespace UniversityStudentTracker.API.Models.DTO.StudySession;
 
 public class AddStudySessionDto
 {
-    [Required(ErrorMessage = "User ID is required.")]
-    public Guid UserID { get; set; }
-
     [Required(ErrorMessage = "Subject is required.")]
     [StringLength(100, ErrorMessage = "Subject can't be longer than 100 characters.")]
     public string Subject { get; set; }

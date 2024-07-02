@@ -4,9 +4,6 @@ namespace UniversityStudentTracker.API.Models.DTO.Break;
 
 public class AddBreakDto
 {
-    [Required(ErrorMessage = "User ID is required.")]
-    public Guid UserID { get; set; }
-
     [Required(ErrorMessage = "Date is required.")]
     public DateTime Date { get; set; }
 
