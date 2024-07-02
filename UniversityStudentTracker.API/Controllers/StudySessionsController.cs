@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UniversityStudentTracker.API.Models.Domains;
 using UniversityStudentTracker.API.Models.DTO.StudySession;
 using UniversityStudentTracker.API.Repositories;
+using UniversityStudentTracker.API.Utils;
 
 namespace UniversityStudentTracker.API.Controllers;
 
@@ -31,6 +32,7 @@ public class StudySessionsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] AddStudySessionDto addStudySessionDto)
     {
         var studySessionDomainModel = _mapper.Map<StudySession>(addStudySessionDto);

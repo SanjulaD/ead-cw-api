@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
 
         if (!checkPasswordResult) return BadRequest("Username or password incorrect");
 
-        IList<string> roles = await _userManager.GetRolesAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
         var jwtToken = _authRepository.CreateJwtToken(user, roles.ToList());
 
         var response = new LoginResponseDto
