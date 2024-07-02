@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
 
         if (identityResult.Succeeded)
-            if (registerRequestDto.Roles != null && registerRequestDto.Roles.Any())
+            if (registerRequestDto.Roles.Any())
             {
                 identityResult = await _userManager.AddToRolesAsync(identityUser, registerRequestDto.Roles);
 
@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
 
         if (!checkPasswordResult) return BadRequest("Username or password incorrect");
 
-        var roles = await _userManager.GetRolesAsync(user);
+        IList<string> roles = await _userManager.GetRolesAsync(user);
         var jwtToken = _authRepository.CreateJwtToken(user, roles.ToList());
 
         var response = new LoginResponseDto
@@ -58,7 +58,8 @@ public class AuthController : ControllerBase
             JwtToken = jwtToken,
             Username = user.UserName,
             Email = user.Email,
-            UserId = user.Id
+            UserId = user.Id,
+            Role = roles.FirstOrDefault()
         };
 
         return Ok(response);
