@@ -1,58 +1,34 @@
-using Microsoft.EntityFrameworkCore;
-using UniversityStudentTracker.API.Contexts;
 using UniversityStudentTracker.API.Models.Domains;
 using UniversityStudentTracker.API.Repositories;
 
 namespace UniversityStudentTracker.API.Services;
 
-public class StudySessionService : IStudySessionRepository
+public class StudySessionService : IStudySessionInterface
 {
-    private readonly StudentPerformance _studentPerformanceDbContext;
-    private readonly IUserAccessor _userAccessor;
+    private readonly IStudySessionInterface _studySessionInterface;
 
-    public StudySessionService(StudentPerformance studentPerformance, IUserAccessor userAccessor)
+    public StudySessionService(IStudySessionInterface studySessionInterface)
     {
-        _studentPerformanceDbContext = studentPerformance;
-        _userAccessor = userAccessor;
+        _studySessionInterface = studySessionInterface;
     }
 
     public async Task<List<StudySession>> GetAllAsync()
     {
-        var userId = _userAccessor.GetUserId();
-
-        return await _studentPerformanceDbContext.StudySessions
-            .Where(s => s.UserID == userId)
-            .ToListAsync();
+        return await _studySessionInterface.GetAllAsync();
     }
 
     public async Task<StudySession> CreateAsync(StudySession studySession)
     {
-        studySession.UserID = _userAccessor.GetUserId();
-        await _studentPerformanceDbContext.StudySessions.AddAsync(studySession);
-        await _studentPerformanceDbContext.SaveChangesAsync();
-
-        return studySession;
+        return await _studySessionInterface.CreateAsync(studySession);
     }
 
     public async Task<StudySession?> GetByIdAsync(Guid id)
     {
-        var userId = _userAccessor.GetUserId();
-        return await _studentPerformanceDbContext.StudySessions
-            .FirstOrDefaultAsync(x => x.StudySessionID == id && x.UserID == userId);
+        return await _studySessionInterface.GetByIdAsync(id);
     }
 
     public async Task<StudySession?> DeleteAsync(Guid id)
     {
-        var userId = _userAccessor.GetUserId();
-
-        var existingStudySession = await _studentPerformanceDbContext.StudySessions
-            .FirstOrDefaultAsync(x => x.StudySessionID == id && x.UserID == userId);
-
-        if (existingStudySession == null) return null;
-
-        _studentPerformanceDbContext.StudySessions.Remove(existingStudySession);
-        await _studentPerformanceDbContext.SaveChangesAsync();
-
-        return existingStudySession;
+        return await _studySessionInterface.DeleteAsync(id);
     }
 }

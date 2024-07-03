@@ -10,13 +10,13 @@ namespace UniversityStudentTracker.API.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthRepository _authRepository;
+    private readonly IAuthInterface _authInterface;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public AuthController(UserManager<IdentityUser> userManager, IAuthRepository authRepository)
+    public AuthController(UserManager<IdentityUser> userManager, IAuthInterface authInterface)
     {
         _userManager = userManager;
-        _authRepository = authRepository;
+        _authInterface = authInterface;
     }
 
     [HttpPost]
@@ -49,7 +49,7 @@ public class AuthController : ControllerBase
         if (!checkPasswordResult) return BadRequest("Username or password incorrect");
 
         var roles = await _userManager.GetRolesAsync(user);
-        var jwtToken = _authRepository.CreateJwtToken(user, roles.ToList());
+        var jwtToken = _authInterface.CreateJwtToken(user, roles.ToList());
 
         var response = new LoginResponseDto
         {

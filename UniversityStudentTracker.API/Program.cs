@@ -54,10 +54,17 @@ builder.Services.AddDbContext<StudentPerformance>(options => { options.UseSqlSer
 
 builder.Services.AddDbContext<StudentAuth>(options => { options.UseSqlServer(connectionString); });
 
-builder.Services.AddScoped<IStudySessionRepository, StudySessionService>();
-builder.Services.AddScoped<IBreaksRepository, BreaksService>();
-builder.Services.AddScoped<IAuthRepository, AuthService>();
-builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+// Register repositories
+builder.Services.AddScoped<IStudySessionInterface, StudySessionRepository>();
+builder.Services.AddScoped<IBreakInterface, BreakRepository>();
+builder.Services.AddScoped<IPredictionInterface, PredictionRepository>();
+
+// Register services
+builder.Services.AddScoped<IAuthInterface, AuthService>();
+builder.Services.AddScoped<IUserInterface, UserService>();
+builder.Services.AddScoped<StudySessionService>();
+builder.Services.AddScoped<BreakService>();
+builder.Services.AddScoped<PredictionService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

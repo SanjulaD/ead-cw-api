@@ -7,7 +7,7 @@ using UniversityStudentTracker.API.Repositories;
 
 namespace UniversityStudentTracker.API.Services;
 
-public class AuthService : IAuthRepository
+public class AuthService : IAuthInterface
 {
     private readonly IConfiguration _configuration;
 
