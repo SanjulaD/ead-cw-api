@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UniversityStudentTracker.API.Models.DTO.Auth;
 using UniversityStudentTracker.API.Repositories;
+using UniversityStudentTracker.API.Utils.Enums;
 
 namespace UniversityStudentTracker.API.Controllers;
 
@@ -29,13 +30,10 @@ public class AuthController : ControllerBase
         };
         var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
 
-        if (identityResult.Succeeded)
-            if (registerRequestDto.Roles.Any())
-            {
-                identityResult = await _userManager.AddToRolesAsync(identityUser, registerRequestDto.Roles);
+        if (!identityResult.Succeeded) return BadRequest("Something went wrong");
+        identityResult = await _userManager.AddToRoleAsync(identityUser, nameof(UserRole.Student));
 
-                if (identityResult.Succeeded) return Ok("User was registered! Please Login");
-            }
+        if (identityResult.Succeeded) return Ok("User was registered! Please Login");
 
         return BadRequest("Something went wrong");
     }
