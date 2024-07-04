@@ -27,19 +27,7 @@ public class AdminController : ControllerBase
     [Route("Create")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
     {
-        var identityUser = new IdentityUser
-        {
-            UserName = registerRequestDto.Username,
-            Email = registerRequestDto.Username
-        };
-        var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
-
-        if (!identityResult.Succeeded) return BadRequest("Something went wrong");
-        identityResult = await _userManager.AddToRoleAsync(identityUser, nameof(UserRole.Admin));
-
-        if (identityResult.Succeeded) return Ok("User was registered! Please Login");
-
-        return BadRequest("Something went wrong");
+        return Ok("User was registered! Please Login");
     }
 
     [HttpDelete]
