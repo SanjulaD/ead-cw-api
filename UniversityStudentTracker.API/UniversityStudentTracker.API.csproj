@@ -2,8 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
-        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
