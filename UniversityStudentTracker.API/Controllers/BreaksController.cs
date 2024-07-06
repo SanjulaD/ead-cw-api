@@ -14,12 +14,14 @@ namespace UniversityStudentTracker.API.Controllers;
 public class BreaksController : ControllerBase
 {
     private readonly BreakService _breakService;
+    private readonly ILogger<BreaksController> _logger;
     private readonly IMapper _mapper;
 
-    public BreaksController(BreakService breakService, IMapper mapper)
+    public BreaksController(BreakService breakService, IMapper mapper, ILogger<BreaksController> logger)
     {
         _breakService = breakService;
         _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -27,6 +29,8 @@ public class BreaksController : ControllerBase
     {
         var breaksDomainModel = await _breakService.GetAllAsync();
         var breaksDto = _mapper.Map<List<BreakDto>>(breaksDomainModel);
+
+        _logger.LogInformation("Retrieved {BreakCount} breaks.", breaksDto.Count);
 
         return Ok(breaksDto);
     }
@@ -40,6 +44,8 @@ public class BreaksController : ControllerBase
 
         var breaksDto = _mapper.Map<BreakDto>(breaksDomainModel);
 
+        _logger.LogInformation("Break created with ID {BreakId}.", breaksDto.BreakID);
+
         return Ok(breaksDto);
     }
 
@@ -48,9 +54,16 @@ public class BreaksController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         var breaksDomainModel = await _breakService.GetByIdAsync(id);
-        if (breaksDomainModel == null) return NotFound();
+        if (breaksDomainModel == null)
+        {
+            _logger.LogWarning("Break not found with ID {BreakId}.", id);
+            return NotFound();
+        }
 
-        var breaksDto = _mapper.Map<Break>(breaksDomainModel);
+        var breaksDto = _mapper.Map<BreakDto>(breaksDomainModel);
+
+        _logger.LogInformation("Retrieved break with ID {BreakId}.", id);
+
         return Ok(breaksDto);
     }
 
@@ -59,7 +72,16 @@ public class BreaksController : ControllerBase
     public async Task<IActionResult> DeleteById([FromRoute] Guid id)
     {
         var breaksDomainModel = await _breakService.DeleteAsync(id);
+        if (breaksDomainModel == null)
+        {
+            _logger.LogWarning("Break not found with ID {BreakId} for deletion.", id);
+            return NotFound();
+        }
+
         var breaksDto = _mapper.Map<BreakDto>(breaksDomainModel);
+
+        _logger.LogInformation("Break deleted with ID {BreakId}.", id);
+
         return Ok(breaksDto);
     }
 }

@@ -14,19 +14,22 @@ namespace UniversityStudentTracker.API.Controllers;
 [Authorize(Roles = nameof(UserRole.Admin))]
 public class AdminController : ControllerBase
 {
+    private readonly ILogger<AdminController> _logger;
     private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public AdminController(UserManager<IdentityUser> userManager, IMapper mapper)
+    public AdminController(UserManager<IdentityUser> userManager, IMapper mapper, ILogger<AdminController> logger)
     {
         _userManager = userManager;
         _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpPost]
     [Route("Create")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
     {
+        _logger.LogInformation("User was registered successfully.");
         return Ok("User was registered! Please Login");
     }
 
@@ -36,12 +39,21 @@ public class AdminController : ControllerBase
     {
         var user = await _userManager.FindByIdAsync(id);
 
-        if (user == null) return NotFound("User not found");
+        if (user == null)
+        {
+            _logger.LogWarning("User not found with id: {UserId}", id);
+            return NotFound("User not found");
+        }
 
         var result = await _userManager.DeleteAsync(user);
 
-        if (result.Succeeded) return Ok("User deleted successfully");
+        if (result.Succeeded)
+        {
+            _logger.LogInformation("User deleted successfully with id: {UserId}", id);
+            return Ok("User deleted successfully");
+        }
 
+        _logger.LogError("Error occurred while deleting user with id: {UserId}", id);
         return BadRequest("Something went wrong while deleting the user");
     }
 
@@ -59,6 +71,8 @@ public class AdminController : ControllerBase
             userDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
             userDtos.Add(userDto);
         }
+
+        _logger.LogInformation("Fetched {UserCount} users.", users.Count);
 
         return Ok(userDtos);
     }

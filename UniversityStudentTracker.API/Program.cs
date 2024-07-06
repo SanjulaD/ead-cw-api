@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using UniversityStudentTracker.API.Contexts;
 using UniversityStudentTracker.API.Mappings;
 using UniversityStudentTracker.API.Repositories;
@@ -13,6 +15,18 @@ using UniversityStudentTracker.API.Utils;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Configure Serilog
+var logger = new LoggerConfiguration()
+    .MinimumLevel.Debug() // Ensure that all levels are captured
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog(logger);
+
+builder.Logging.ClearProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -50,9 +64,21 @@ builder.Services.AddSwaggerGen(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTION_STRING");
 
-builder.Services.AddDbContext<StudentPerformance>(options => { options.UseSqlServer(connectionString); });
+// Log the connection string
+logger.Information("Retrieved connection string", connectionString);
 
-builder.Services.AddDbContext<StudentAuth>(options => { options.UseSqlServer(connectionString); });
+// Add DbContexts with logging
+builder.Services.AddDbContext<StudentPerformance>((serviceProvider, options) =>
+{
+    options.UseSqlServer(connectionString);
+    options.UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
+});
+
+builder.Services.AddDbContext<StudentAuth>((serviceProvider, options) =>
+{
+    options.UseSqlServer(connectionString);
+    options.UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
+});
 
 // Register repositories
 builder.Services.AddScoped<IStudySessionInterface, StudySessionRepository>();
@@ -87,6 +113,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        corsPolicyBuilder =>
+        {
+            corsPolicyBuilder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -100,6 +138,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
     });
 }
 
+// Use CORS policy
+app.UseCors("AllowAllOrigins");
+
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseDeveloperExceptionPage();
@@ -110,13 +151,14 @@ else
     app.UseHsts();
 }
 
-app.UseCors("AllowAllOrigins");
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+var testLogger = app.Services.GetRequiredService<ILogger<Program>>();
+testLogger.LogInformation("Test log entry to verify logging setup.");
 
 app.Run();
