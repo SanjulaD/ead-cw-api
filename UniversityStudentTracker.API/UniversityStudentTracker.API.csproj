@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
+        <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -37,6 +39,14 @@
 
     <ItemGroup>
         <Folder Include="Controllers\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Web.config">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
