@@ -27,7 +27,12 @@ namespace UniversityStudentTracker.API.Controllers
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
         {
-            _logger.LogInformation("Register endpoint called.");
+            var user = await _userManager.FindByEmailAsync(registerRequestDto.Username);
+            if (user != null)
+            {
+                _logger.LogWarning("User found with email {Email}.", registerRequestDto.Username);
+                return BadRequest("User already exists! Try with different username");
+            }
 
             var identityUser = new IdentityUser
             {
