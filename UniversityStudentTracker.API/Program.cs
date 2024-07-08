@@ -34,7 +34,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Student Performance API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentMetrics Performance API", Version = "v1" });
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -84,6 +84,7 @@ builder.Services.AddDbContext<StudentAuth>((serviceProvider, options) =>
 builder.Services.AddScoped<IStudySessionInterface, StudySessionRepository>();
 builder.Services.AddScoped<IBreakInterface, BreakRepository>();
 builder.Services.AddScoped<IPredictionInterface, PredictionRepository>();
+builder.Services.AddScoped<IStudentMetricsInterface, StudentMetricsRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthInterface, AuthService>();
@@ -91,11 +92,12 @@ builder.Services.AddScoped<IUserInterface, UserService>();
 builder.Services.AddScoped<StudySessionService>();
 builder.Services.AddScoped<BreakService>();
 builder.Services.AddScoped<PredictionService>();
+builder.Services.AddScoped<StudentMetricsService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("Student")
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("StudentMetrics")
     .AddEntityFrameworkStores<StudentAuth>().AddDefaultTokenProviders();
 
 builder.Services.AddHttpContextAccessor();

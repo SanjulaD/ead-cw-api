@@ -19,8 +19,8 @@ public class StudentAuth(DbContextOptions<StudentAuth> options) : IdentityDbCont
             {
                 Id = studentRoleId,
                 ConcurrencyStamp = studentRoleId,
-                Name = "Student",
-                NormalizedName = "Student".ToUpper()
+                Name = "StudentMetrics",
+                NormalizedName = "StudentMetrics".ToUpper()
             },
             new()
             {

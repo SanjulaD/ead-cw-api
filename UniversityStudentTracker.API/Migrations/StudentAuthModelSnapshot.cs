@@ -53,7 +53,7 @@ namespace UniversityStudentTracker.API.Migrations
                         {
                             Id = "04ab77f0-e145-4fbf-b641-989df24e5574",
                             ConcurrencyStamp = "04ab77f0-e145-4fbf-b641-989df24e5574",
-                            Name = "Student",
+                            Name = "StudentMetrics",
                             NormalizedName = "STUDENT"
                         },
                         new

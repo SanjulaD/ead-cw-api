@@ -13,12 +13,10 @@ public class UserService(IHttpContextAccessor httpContextAccessor) : IUserInterf
         {
             throw new InvalidOperationException("User ID claim not found.");
         }
-        else
-        {
-            if (!Guid.TryParse(userIdString, out var userIdGuid))
-                throw new FormatException($"Failed to parse user ID '{userIdString}' to Guid.");
 
-            return userIdGuid;
-        }
+        if (!Guid.TryParse(userIdString, out var userIdGuid))
+            throw new FormatException($"Failed to parse user ID '{userIdString}' to Guid.");
+
+        return userIdGuid;
     }
 }

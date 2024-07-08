@@ -163,7 +163,7 @@ namespace UniversityStudentTracker.API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "04ab77f0-e145-4fbf-b641-989df24e5574", "04ab77f0-e145-4fbf-b641-989df24e5574", "Student", "STUDENT" },
+                    { "04ab77f0-e145-4fbf-b641-989df24e5574", "04ab77f0-e145-4fbf-b641-989df24e5574", "StudentMetrics", "STUDENT" },
                     { "04ab77f0-e145-4fbf-b641-989df24e5576", "04ab77f0-e145-4fbf-b641-989df24e5576", "Admin", "ADMIN" }
                 });
 

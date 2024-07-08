@@ -6,7 +6,7 @@ namespace UniversityStudentTracker.API.Utils;
 
 public class RegisterRequestValidations : ValidationAttribute
 {
-    private readonly string[] _validRoles = ["Student", "Admin"];
+    private readonly string[] _validRoles = ["StudentMetrics", "Admin"];
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
