@@ -8,12 +8,10 @@ namespace UniversityStudentTracker.API.Services;
 public class StudentMetricsService : IStudentMetricsInterface
 {
     private readonly IStudentMetricsInterface _studentMetricsRepository;
-    private readonly TimeHelper _timeHelper;
 
-    public StudentMetricsService(IStudentMetricsInterface studentMetricsRepository, TimeHelper timeHelper)
+    public StudentMetricsService(IStudentMetricsInterface studentMetricsRepository)
     {
         _studentMetricsRepository = studentMetricsRepository;
-        _timeHelper = timeHelper;
     }
 
     public async Task<List<StudySession>> GetStudySessionsByRangeAsync(DateTime startDate, DateTime endDate)
@@ -26,16 +24,32 @@ public class StudentMetricsService : IStudentMetricsInterface
         return await _studentMetricsRepository.GetBreaksByRangeAsync(startDate, endDate);
     }
 
+    public Task<Dictionary<string, int>> GetStudyTimeBySubjectByRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<StudentMetricsDto> GetStudentMetricsAsync(
         List<StudySession> studySessionsByMonth,
         List<Break> breaksByMonth,
         List<StudySession> studySessionsByYear,
-        List<Break> breaksByYear)
+        List<Break> breaksByYear,
+        List<StudySession> studySessionsByWeek)
     {
+        var studyTimeBySubject = new Dictionary<string, int>();
         var monthlyMetrics = CalculateMonthlyStatistics(studySessionsByMonth, breaksByMonth);
 
         var (monthlyStudyTimeHours, monthlyBreakTimeHours, totalStudyTimeHoursByYear, totalBreakTimeHoursByYear) =
             CalculateYearlyStatisticsByMonth(studySessionsByYear, breaksByYear);
+
+        foreach (var session in studySessionsByWeek)
+            if (studyTimeBySubject.ContainsKey(session.Subject))
+                studyTimeBySubject[session.Subject] += session.DurationMinutes;
+            else
+                studyTimeBySubject[session.Subject] = session.DurationMinutes;
+
+        foreach (var group in studyTimeBySubject)
+            Console.WriteLine("Key: {0} Value: {1}", group.Key, group.Value);
 
         return new StudentMetricsDto
         {
@@ -46,7 +60,8 @@ public class StudentMetricsService : IStudentMetricsInterface
             MonthlyStudyTimeHours = monthlyStudyTimeHours,
             MonthlyBreakTimeHours = monthlyBreakTimeHours,
             TotalStudyTimeHoursByYear = totalStudyTimeHoursByYear,
-            TotalBreakTimeHoursByYear = totalBreakTimeHoursByYear
+            TotalBreakTimeHoursByYear = totalBreakTimeHoursByYear,
+            TotalStudyTimeBySubjectByWeek = studyTimeBySubject
         };
     }
 

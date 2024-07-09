@@ -1,6 +1,6 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniversityStudentTracker.API.Helpers;
 using UniversityStudentTracker.API.Services;
 using UniversityStudentTracker.API.Utils.Enums;
 
@@ -11,13 +11,13 @@ namespace UniversityStudentTracker.API.Controllers;
 [Authorize(Roles = nameof(UserRole.Student))]
 public class StudentMetricsController : ControllerBase
 {
-    private readonly IMapper _mapper;
+    private readonly ILogger<BreaksController> _logger;
     private readonly StudentMetricsService _studentMetricsService;
 
-    public StudentMetricsController(StudentMetricsService studentMetricsService, IMapper mapper)
+    public StudentMetricsController(StudentMetricsService studentMetricsService, ILogger<BreaksController> logger)
     {
         _studentMetricsService = studentMetricsService;
-        _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -25,19 +25,24 @@ public class StudentMetricsController : ControllerBase
     {
         var currentDate = DateTime.UtcNow;
 
-        var startDate = new DateTime(currentDate.Year, currentDate.Month, 1);
-        var endDate = startDate.AddMonths(1).AddDays(-1);
+        // Get start and end of week
+        var (startOfWeek, endOfWeek) = DateHelper.GetStartEndOfDay(currentDate.AddDays(-(int)currentDate.DayOfWeek));
 
-        var startYear = new DateTime(currentDate.Year, 1, 1);
-        var endYear = new DateTime(currentDate.Year, 12, 31, 23, 59, 59);
+        // Get start and end of month
+        var (startDate, endDate) = DateHelper.GetStartEndOfDay(new DateTime(currentDate.Year, currentDate.Month, 1));
+
+        // Get start and end of year
+        var (startYear, endYear) = DateHelper.GetStartEndOfDay(new DateTime(currentDate.Year, 1, 1));
 
         var studySessionsByMonth = await _studentMetricsService.GetStudySessionsByRangeAsync(startDate, endDate);
         var breaksByMonth = await _studentMetricsService.GetBreaksByRangeAsync(startDate, endDate);
         var studySessionsByYear = await _studentMetricsService.GetStudySessionsByRangeAsync(startYear, endYear);
         var breaksByYear = await _studentMetricsService.GetBreaksByRangeAsync(startYear, endYear);
 
+        var studySessionsByWeek = await _studentMetricsService.GetStudySessionsByRangeAsync(startOfWeek, endOfWeek);
+
         var metrics = await _studentMetricsService.GetStudentMetricsAsync(studySessionsByMonth, breaksByMonth,
-            studySessionsByYear, breaksByYear);
+            studySessionsByYear, breaksByYear, studySessionsByWeek);
 
         return Ok(metrics);
     }

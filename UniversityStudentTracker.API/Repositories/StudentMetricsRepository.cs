@@ -33,4 +33,9 @@ public class StudentMetricsRepository : IStudentMetricsInterface
             .Where(b => b.UserID == userId && b.Date >= startDate && b.Date <= endDate)
             .ToListAsync();
     }
+
+    public Task<Dictionary<string, int>> GetStudyTimeBySubjectAsync(DateTime startDate, DateTime endDate)
+    {
+        throw new NotImplementedException();
+    }
 }

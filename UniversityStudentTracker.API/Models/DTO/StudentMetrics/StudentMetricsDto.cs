@@ -10,4 +10,6 @@ public class StudentMetricsDto
     public int[] MonthlyBreakTimeHours { get; set; }
     public int TotalStudyTimeHoursByYear { get; set; }
     public int TotalBreakTimeHoursByYear { get; set; }
+
+    public Dictionary<string, int> TotalStudyTimeBySubjectByWeek { get; set; }
 }

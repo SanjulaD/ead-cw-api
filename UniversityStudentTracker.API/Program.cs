@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using UniversityStudentTracker.API.Contexts;
-using UniversityStudentTracker.API.Helpers;
 using UniversityStudentTracker.API.Mappings;
 using UniversityStudentTracker.API.Repositories;
 using UniversityStudentTracker.API.Services;
@@ -94,9 +93,6 @@ builder.Services.AddScoped<StudySessionService>();
 builder.Services.AddScoped<BreakService>();
 builder.Services.AddScoped<PredictionService>();
 builder.Services.AddScoped<StudentMetricsService>();
-
-// Register Helpers
-builder.Services.AddScoped<TimeHelper>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
