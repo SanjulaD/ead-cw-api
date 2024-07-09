@@ -1,3 +1,4 @@
+using UniversityStudentTracker.API.Helpers;
 using UniversityStudentTracker.API.Models.Domains;
 using UniversityStudentTracker.API.Models.DTO.Student;
 using UniversityStudentTracker.API.Repositories;
@@ -7,10 +8,12 @@ namespace UniversityStudentTracker.API.Services;
 public class StudentMetricsService : IStudentMetricsInterface
 {
     private readonly IStudentMetricsInterface _studentMetricsRepository;
+    private readonly TimeHelper _timeHelper;
 
-    public StudentMetricsService(IStudentMetricsInterface studentMetricsRepository)
+    public StudentMetricsService(IStudentMetricsInterface studentMetricsRepository, TimeHelper timeHelper)
     {
         _studentMetricsRepository = studentMetricsRepository;
+        _timeHelper = timeHelper;
     }
 
     public async Task<List<StudySession>> GetStudySessionsByRangeAsync(DateTime startDate, DateTime endDate)
@@ -23,29 +26,70 @@ public class StudentMetricsService : IStudentMetricsInterface
         return await _studentMetricsRepository.GetBreaksByRangeAsync(startDate, endDate);
     }
 
-    public async Task<StudentMetricsDto> GetStudentMetricsAsync(IEnumerable<StudySession> studySessions,
-        IEnumerable<Break> breaks)
+    public async Task<StudentMetricsDto> GetStudentMetricsAsync(
+        List<StudySession> studySessionsByMonth,
+        List<Break> breaksByMonth,
+        List<StudySession> studySessionsByYear,
+        List<Break> breaksByYear)
+    {
+        var monthlyMetrics = CalculateMonthlyStatistics(studySessionsByMonth, breaksByMonth);
+
+        var (monthlyStudyTimeHours, monthlyBreakTimeHours, totalStudyTimeHoursByYear, totalBreakTimeHoursByYear) =
+            CalculateYearlyStatisticsByMonth(studySessionsByYear, breaksByYear);
+
+        return new StudentMetricsDto
+        {
+            TotalStudyTimeMinutes = monthlyMetrics.totalStudyTimeMinutes,
+            AverageStudySessionDuration = monthlyMetrics.averageStudySessionDuration,
+            TotalBreakTimeMinutes = monthlyMetrics.totalBreakTimeMinutes,
+            NumberOfStudySessions = monthlyMetrics.numberOfStudySessions,
+            MonthlyStudyTimeHours = monthlyStudyTimeHours,
+            MonthlyBreakTimeHours = monthlyBreakTimeHours,
+            TotalStudyTimeHoursByYear = totalStudyTimeHoursByYear,
+            TotalBreakTimeHoursByYear = totalBreakTimeHoursByYear
+        };
+    }
+
+    private (int totalStudyTimeMinutes, double averageStudySessionDuration, int totalBreakTimeMinutes, int
+        numberOfStudySessions) CalculateMonthlyStatistics(
+            List<StudySession> studySessions,
+            List<Break> breaks)
     {
         var studySessionList = studySessions.ToList();
         var breakList = breaks.ToList();
 
         var totalStudyTimeMinutes = studySessionList.Sum(ss => ss.DurationMinutes);
-        Console.WriteLine("-------------------------111111--------------");
         var averageStudySessionDuration =
             studySessionList.Count != 0 ? studySessionList.Average(ss => ss.DurationMinutes) : 0;
-        Console.WriteLine("----------------222222-----------------------");
-        var totalBreakTimeMinutes = 10;
-        Console.WriteLine("------------3333333---------------------------");
+        var totalBreakTimeMinutes = breakList.Sum(b => b.DurationMinutes);
         var numberOfStudySessions = studySessionList.Count;
 
-        Console.WriteLine("---------------------------------------");
+        return (totalStudyTimeMinutes, averageStudySessionDuration, totalBreakTimeMinutes, numberOfStudySessions);
+    }
 
-        return new StudentMetricsDto
-        {
-            TotalStudyTimeMinutes = totalStudyTimeMinutes,
-            AverageStudySessionDuration = averageStudySessionDuration,
-            TotalBreakTimeMinutes = totalBreakTimeMinutes,
-            NumberOfStudySessions = numberOfStudySessions
-        };
+    private (int[] monthlyStudyTimeHours, int[] monthlyBreakTimeHours, int totalStudyTimeHoursByYear, int
+        totalBreakTimeHoursByYear) CalculateYearlyStatisticsByMonth(
+            List<StudySession> studySessions,
+            List<Break> breaks)
+    {
+        var monthlyStudyTimeMinutes = new int[12];
+        var monthlyBreakTimeMinutes = new int[12];
+
+        foreach (var session in studySessions)
+            monthlyStudyTimeMinutes[session.Date.Month - 1] += session.DurationMinutes;
+
+        foreach (var breakItem in breaks)
+            monthlyBreakTimeMinutes[breakItem.Date.Month - 1] += breakItem.DurationMinutes;
+
+        var monthlyStudyTimeHours = TimeHelper.ConvertMinutesToHours(monthlyStudyTimeMinutes);
+        var monthlyBreakTimeHours = TimeHelper.ConvertMinutesToHours(monthlyBreakTimeMinutes);
+
+        var totalStudyTimeMinutesByYear = studySessions.Sum(ss => ss.DurationMinutes);
+        var totalBreakTimeMinutesByYear = breaks.Sum(b => b.DurationMinutes);
+
+        var totalStudyTimeHoursByYear = totalStudyTimeMinutesByYear / 60;
+        var totalBreakTimeHoursByYear = totalBreakTimeMinutesByYear / 60;
+
+        return (monthlyStudyTimeHours, monthlyBreakTimeHours, totalStudyTimeHoursByYear, totalBreakTimeHoursByYear);
     }
 }

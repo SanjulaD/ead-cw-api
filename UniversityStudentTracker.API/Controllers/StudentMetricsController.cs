@@ -24,21 +24,21 @@ public class StudentMetricsController : ControllerBase
     public async Task<IActionResult> GetStatistics()
     {
         var currentDate = DateTime.UtcNow;
+
         var startDate = new DateTime(currentDate.Year, currentDate.Month, 1);
         var endDate = startDate.AddMonths(1).AddDays(-1);
 
-        Console.WriteLine(currentDate);
-        Console.WriteLine(startDate);
-        Console.WriteLine(endDate);
+        var startYear = new DateTime(currentDate.Year, 1, 1);
+        var endYear = new DateTime(currentDate.Year, 12, 31, 23, 59, 59);
 
-        var studySessionDomainModel = await _studentMetricsService.GetStudySessionsByRangeAsync(startDate, endDate);
-        var breaksDomainModel = await _studentMetricsService.GetBreaksByRangeAsync(startDate, endDate);
+        var studySessionsByMonth = await _studentMetricsService.GetStudySessionsByRangeAsync(startDate, endDate);
+        var breaksByMonth = await _studentMetricsService.GetBreaksByRangeAsync(startDate, endDate);
+        var studySessionsByYear = await _studentMetricsService.GetStudySessionsByRangeAsync(startYear, endYear);
+        var breaksByYear = await _studentMetricsService.GetBreaksByRangeAsync(startYear, endYear);
 
-        var metrics =
-            await _studentMetricsService.GetStudentMetricsAsync(studySessionDomainModel, breaksDomainModel);
+        var metrics = await _studentMetricsService.GetStudentMetricsAsync(studySessionsByMonth, breaksByMonth,
+            studySessionsByYear, breaksByYear);
 
-
-        Console.WriteLine(metrics);
         return Ok(metrics);
     }
 }
