@@ -80,11 +80,16 @@ builder.Services.AddDbContext<StudentAuth>((serviceProvider, options) =>
     options.UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
 });
 
+builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("StudentMetrics")
+    .AddEntityFrameworkStores<StudentAuth>().AddDefaultTokenProviders();
+
 // Register repositories
 builder.Services.AddScoped<IStudySessionInterface, StudySessionRepository>();
 builder.Services.AddScoped<IBreakInterface, BreakRepository>();
 builder.Services.AddScoped<IPredictionInterface, PredictionRepository>();
 builder.Services.AddScoped<IStudentMetricsInterface, StudentMetricsRepository>();
+builder.Services.AddScoped<IAdminInterface, AdminRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthInterface, AuthService>();
@@ -93,12 +98,9 @@ builder.Services.AddScoped<StudySessionService>();
 builder.Services.AddScoped<BreakService>();
 builder.Services.AddScoped<PredictionService>();
 builder.Services.AddScoped<StudentMetricsService>();
+builder.Services.AddScoped<AdminService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-
-builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("StudentMetrics")
-    .AddEntityFrameworkStores<StudentAuth>().AddDefaultTokenProviders();
 
 builder.Services.AddHttpContextAccessor();
 

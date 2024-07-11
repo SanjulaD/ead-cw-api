@@ -54,11 +54,9 @@ namespace UniversityStudentTracker.API.Controllers
                 _logger.LogInformation("User registered successfully.");
                 return Ok("User was registered! Please Login");
             }
-            else
-            {
-                _logger.LogWarning("Failed to assign role to the user.");
-                return BadRequest("Something went wrong");
-            }
+
+            _logger.LogWarning("Failed to assign role to the user.");
+            return BadRequest("Something went wrong");
         }
 
         [HttpPost]

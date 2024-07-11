@@ -1,12 +1,9 @@
 namespace UniversityStudentTracker.API.Helpers;
 
-public class TimeHelper
+public abstract class TimeHelper
 {
-    public static int[] ConvertMinutesToHours(int[] minutesArray)
+    public static int[] ConvertMinutesToHours(int[] minutes)
     {
-        var hoursArray = new int[minutesArray.Length];
-        for (var i = 0; i < minutesArray.Length; i++) hoursArray[i] = minutesArray[i] / 60;
-
-        return hoursArray;
+        return minutes.Select(m => m / 60).ToArray();
     }
 }

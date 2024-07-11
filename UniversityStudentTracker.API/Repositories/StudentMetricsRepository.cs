@@ -19,7 +19,6 @@ public class StudentMetricsRepository : IStudentMetricsInterface
     {
         var userId = _userInterface.GetUserId();
 
-
         return await _studentPerformanceDbContext.StudySessions
             .Where(ss => ss.UserID == userId && ss.Date >= startDate && ss.Date <= endDate)
             .ToListAsync();
@@ -32,10 +31,5 @@ public class StudentMetricsRepository : IStudentMetricsInterface
         return await _studentPerformanceDbContext.Breaks
             .Where(b => b.UserID == userId && b.Date >= startDate && b.Date <= endDate)
             .ToListAsync();
-    }
-
-    public Task<Dictionary<string, int>> GetStudyTimeBySubjectAsync(DateTime startDate, DateTime endDate)
-    {
-        throw new NotImplementedException();
     }
 }

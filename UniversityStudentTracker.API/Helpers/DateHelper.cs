@@ -1,6 +1,6 @@
 namespace UniversityStudentTracker.API.Helpers;
 
-public class DateHelper
+public abstract class DateHelper
 {
     public static (DateTime start, DateTime end) GetStartEndOfDay(DateTime date)
     {
