@@ -117,13 +117,14 @@ public class AdminController : ControllerBase
         var currentDate = DateTime.UtcNow;
 
         // Get start and end of week
-        var (startOfWeek, endOfWeek) = DateHelper.GetStartEndOfDay(currentDate.AddDays(-(int)currentDate.DayOfWeek));
+        var (startOfWeek, endOfWeek) = DateHelper.GetStartEndOfWeek(currentDate.AddDays(-(int)currentDate.DayOfWeek));
 
         // Get start and end of month
-        var (startMonth, endMonth) = DateHelper.GetStartEndOfDay(new DateTime(currentDate.Year, currentDate.Month, 1));
+        var (startMonth, endMonth) =
+            DateHelper.GetStartEndOfMonth(new DateTime(currentDate.Year, currentDate.Month, 1));
 
         // Get start and end of year
-        var (startYear, endYear) = DateHelper.GetStartEndOfDay(new DateTime(currentDate.Year, 1, 1));
+        var (startYear, endYear) = DateHelper.GetStartEndOfYear(new DateTime(currentDate.Year, 1, 1));
 
         var totalNumberOfStudents = 10;
         var totalNumberOfStudySessions = await _adminService.GetTotalNumberOfStudySessionsAsync(startMonth, endMonth);
