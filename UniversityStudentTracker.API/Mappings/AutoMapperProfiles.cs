@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using UniversityStudentTracker.API.Models.Domains;
 using UniversityStudentTracker.API.Models.DTO.Break;
+using UniversityStudentTracker.API.Models.DTO.Prediction;
 using UniversityStudentTracker.API.Models.DTO.StudySession;
 using UniversityStudentTracker.API.Models.DTO.User;
 
@@ -18,5 +19,7 @@ public class AutoMapperProfiles : Profile
         CreateMap<AddBreakDto, Break>().ReverseMap();
 
         CreateMap<IdentityUser, UserDto>().ReverseMap();
+
+        CreateMap<PredictionRequestDto, PredictionDto>().ReverseMap();
     }
 }

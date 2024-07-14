@@ -126,7 +126,6 @@ public class AdminController : ControllerBase
         // Get start and end of year
         var (startYear, endYear) = DateHelper.GetStartEndOfYear(new DateTime(currentDate.Year, 1, 1));
 
-        var totalNumberOfStudents = 10;
         var totalNumberOfStudySessions = await _adminService.GetTotalNumberOfStudySessionsAsync(startMonth, endMonth);
         var totalNumberOfBreaks = await _adminService.GetTotalNumberOfBreaksAsync(startMonth, endMonth);
         var totalStudyTimeLogged = await _adminService.GetTotalStudyTimeLoggedAsync(startMonth, endMonth);
@@ -137,8 +136,10 @@ public class AdminController : ControllerBase
 
         var studySessionsByWeek = await _adminService.GetStudySessionsByRangeAsync(startOfWeek, endOfWeek);
 
+        var totalNumberOfStudents = await _userManager.Users.ToListAsync();
+
         var metrics = await _adminService.GetStudentMetricsAsync(
-            totalNumberOfStudents,
+            totalNumberOfStudents.Count,
             totalNumberOfStudySessions,
             totalNumberOfBreaks,
             totalStudyTimeLogged,

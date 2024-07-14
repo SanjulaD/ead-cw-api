@@ -11,6 +11,7 @@ namespace UniversityStudentTracker.API.Controllers;
 [Authorize(Roles = nameof(UserRole.Student))]
 public class StudentMetricsController : ControllerBase
 {
+    private readonly HttpClient _httpClient;
     private readonly ILogger<BreaksController> _logger;
     private readonly StudentMetricsService _studentMetricsService;
 

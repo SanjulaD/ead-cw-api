@@ -6,3 +6,4 @@ riderModule.iml
 .idea
 .DS_Store
 UniversityStudentTracker.API/appsettings.Development.json
+UniversityStudentTracker.API/ML/trained_model.pkl

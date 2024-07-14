@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace UniversityStudentTracker.API.Models.DTO.Prediction;
 
 public class PredictionRequestDto
 {
-    [Required(ErrorMessage = "Subject is required.")]
-    [StringLength(100, ErrorMessage = "Subject can't be longer than 100 characters.")]
-    public string Subject { get; set; }
+    public string subject { get; set; }
+    public float average_study_time { get; set; }
+    public float average_break_time { get; set; }
 }

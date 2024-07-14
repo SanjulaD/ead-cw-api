@@ -80,6 +80,8 @@ builder.Services.AddDbContext<StudentAuth>((serviceProvider, options) =>
     options.UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
 });
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("StudentMetrics")
     .AddEntityFrameworkStores<StudentAuth>().AddDefaultTokenProviders();
@@ -96,7 +98,6 @@ builder.Services.AddScoped<IAuthInterface, AuthService>();
 builder.Services.AddScoped<IUserInterface, UserService>();
 builder.Services.AddScoped<StudySessionService>();
 builder.Services.AddScoped<BreakService>();
-builder.Services.AddScoped<PredictionService>();
 builder.Services.AddScoped<StudentMetricsService>();
 builder.Services.AddScoped<AdminService>();
 

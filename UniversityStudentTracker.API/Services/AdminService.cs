@@ -24,11 +24,6 @@ public class AdminService : IAdminInterface
         return await _adminInterface.GetBreaksByRangeAsync(startDate, endDate);
     }
 
-    // public async Task<int> GetTotalNumberOfStudentsAsync()
-    // {
-    //     return await _adminInterface.GetTotalNumberOfStudentsAsync();
-    // }
-
     public async Task<int> GetTotalNumberOfStudySessionsAsync(DateTime startDate, DateTime endDate)
     {
         return await _adminInterface.GetTotalNumberOfStudySessionsAsync(startDate, endDate);
