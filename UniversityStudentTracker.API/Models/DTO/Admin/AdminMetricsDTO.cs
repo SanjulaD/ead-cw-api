@@ -4,7 +4,7 @@ public class AdminMetricsDTO
 {
     public int TotalNumberOfStudents { get; set; }
     public int TotalNumberOfStudySessions { get; set; }
-    public int TotalNumberOfBreakTimeMinutes { get; set; }
+    public int TotalNumberOfBreaks { get; set; }
     public int TotalStudyTimeLogged { get; set; }
     public int TotalBreakTimeLogged { get; set; }
     public int[] MonthlyStudyTimeHours { get; set; }

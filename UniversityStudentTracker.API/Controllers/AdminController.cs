@@ -128,15 +128,10 @@ public class AdminController : ControllerBase
 
         var totalNumberOfStudents = 10;
         var totalNumberOfStudySessions = await _adminService.GetTotalNumberOfStudySessionsAsync(startMonth, endMonth);
-        var totalNumberOfBreakTimeMinutes = await _adminService.GetTotalNumberOfBreaksAsync(startMonth, endMonth);
+        var totalNumberOfBreaks = await _adminService.GetTotalNumberOfBreaksAsync(startMonth, endMonth);
         var totalStudyTimeLogged = await _adminService.GetTotalStudyTimeLoggedAsync(startMonth, endMonth);
         var totalBreakTimeLogged = await _adminService.GetTotalBreakTimeLoggedAsync(startMonth, endMonth);
 
-        Console.WriteLine(startMonth);
-        Console.WriteLine(endMonth);
-
-        var studySessionsByMonth = await _adminService.GetStudySessionsByRangeAsync(startMonth, endMonth);
-        var breaksByMonth = await _adminService.GetBreaksByRangeAsync(startMonth, endMonth);
         var studySessionsByYear = await _adminService.GetStudySessionsByRangeAsync(startYear, endYear);
         var breaksByYear = await _adminService.GetBreaksByRangeAsync(startYear, endYear);
 
@@ -145,13 +140,12 @@ public class AdminController : ControllerBase
         var metrics = await _adminService.GetStudentMetricsAsync(
             totalNumberOfStudents,
             totalNumberOfStudySessions,
-            totalNumberOfBreakTimeMinutes,
+            totalNumberOfBreaks,
             totalStudyTimeLogged,
             totalBreakTimeLogged,
-            studySessionsByMonth,
-            breaksByMonth,
             studySessionsByYear,
-            breaksByYear
+            breaksByYear,
+            studySessionsByWeek
         );
 
         _logger.LogInformation("Admin metrics created successfully");

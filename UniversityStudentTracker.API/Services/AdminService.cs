@@ -49,38 +49,40 @@ public class AdminService : IAdminInterface
         return await _adminInterface.GetTotalBreakTimeLoggedAsync(startDate, endDate);
     }
 
-    public Task<AdminMetricsDTO> GetStudentMetricsAsync(int totalNumberOfStudents,
+    public Task<AdminMetricsDTO> GetStudentMetricsAsync(
+        int totalNumberOfStudents,
         int totalNumberOfStudySessions,
         int totalNumberOfBreakTimeMinutes,
         int totalStudyTimeLogged,
         int totalBreakTimeLogged,
         List<StudySession> studySessionsByYear,
         List<Break> breaksByYear,
-        List<StudySession> studySessionsByWeek, List<Break> breaks)
+        List<StudySession> studySessionsByWeek
+    )
     {
-        var studyTimeBySubject = new Dictionary<string, int>();
+        var totalStudyTimeBySubjectByWeek = new Dictionary<string, int>();
 
         var (monthlyStudyTimeHours, monthlyBreakTimeHours, totalStudyTimeHoursByYear, totalBreakTimeHoursByYear) =
             StatisticsHelper.CalculateYearlyStatisticsByMonth(studySessionsByYear, breaksByYear);
 
         foreach (var session in studySessionsByWeek)
-            if (studyTimeBySubject.ContainsKey(session.Subject))
-                studyTimeBySubject[session.Subject] += session.DurationMinutes;
+            if (totalStudyTimeBySubjectByWeek.ContainsKey(session.Subject))
+                totalStudyTimeBySubjectByWeek[session.Subject] += session.DurationMinutes;
             else
-                studyTimeBySubject[session.Subject] = session.DurationMinutes;
+                totalStudyTimeBySubjectByWeek[session.Subject] = session.DurationMinutes;
 
         return Task.FromResult(new AdminMetricsDTO
         {
             TotalNumberOfStudents = totalNumberOfStudents,
             TotalNumberOfStudySessions = totalNumberOfStudySessions,
-            TotalNumberOfBreakTimeMinutes = totalNumberOfBreakTimeMinutes,
+            TotalNumberOfBreaks = totalNumberOfBreakTimeMinutes,
             TotalStudyTimeLogged = totalStudyTimeLogged,
             TotalBreakTimeLogged = totalBreakTimeLogged,
             MonthlyStudyTimeHours = monthlyStudyTimeHours,
             MonthlyBreakTimeHours = monthlyBreakTimeHours,
             TotalStudyTimeHoursByYear = totalStudyTimeHoursByYear,
             TotalBreakTimeHoursByYear = totalBreakTimeHoursByYear,
-            TotalStudyTimeBySubjectByWeek = studyTimeBySubject
+            TotalStudyTimeBySubjectByWeek = totalStudyTimeBySubjectByWeek
         });
     }
 }
