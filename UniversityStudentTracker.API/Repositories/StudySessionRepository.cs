@@ -54,4 +54,9 @@ public class StudySessionRepository : IStudySessionInterface
 
         return existingStudySession;
     }
+
+    public async Task<IEnumerable<StudySession>> GetStudySessionsBySubject(string subject)
+    {
+        return await _studentPerformanceDbContext.StudySessions.Where(ss => ss.Subject == subject).ToListAsync();
+    }
 }

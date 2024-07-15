@@ -92,6 +92,7 @@ builder.Services.AddScoped<IBreakInterface, BreakRepository>();
 builder.Services.AddScoped<IPredictionInterface, PredictionRepository>();
 builder.Services.AddScoped<IStudentMetricsInterface, StudentMetricsRepository>();
 builder.Services.AddScoped<IAdminInterface, AdminRepository>();
+builder.Services.AddScoped<IPredictionInterface, PredictionRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthInterface, AuthService>();
@@ -100,6 +101,7 @@ builder.Services.AddScoped<StudySessionService>();
 builder.Services.AddScoped<BreakService>();
 builder.Services.AddScoped<StudentMetricsService>();
 builder.Services.AddScoped<AdminService>();
+builder.Services.AddScoped<PredictionService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

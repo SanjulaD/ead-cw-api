@@ -2,6 +2,6 @@ namespace UniversityStudentTracker.API.Models.DTO.Prediction;
 
 public class PredictionResponseDto
 {
-    public float PredictedGrade { get; set; }
-    public float PredictedKnowledgeLevel { get; set; }
+    public decimal PredictedGrade { get; set; }
+    public int PredictedKnowledgeLevel { get; set; }
 }

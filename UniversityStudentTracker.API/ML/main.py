@@ -1,3 +1,5 @@
+import math
+
 import joblib
 import numpy as np
 from fastapi import FastAPI, HTTPException
@@ -34,8 +36,8 @@ async def predict(data: PredictionRequest):
 
         # Prepare the response
         response_data = {
-            "PredictedGrade": float(predicted_values[0][0]),
-            "PredictedKnowledgeLevel": float(predicted_values[0][1]),
+            "PredictedGrade": round(float(predicted_values[0][0]), 2),
+            "PredictedKnowledgeLevel": math.ceil(predicted_values[0][1]),
         }
         return response_data
 

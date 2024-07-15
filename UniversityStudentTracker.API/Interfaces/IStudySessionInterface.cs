@@ -8,4 +8,5 @@ public interface IStudySessionInterface
     Task<StudySession> CreateAsync(StudySession studySession);
     Task<StudySession?> GetByIdAsync(Guid id);
     Task<StudySession?> DeleteAsync(Guid id);
+    Task<IEnumerable<StudySession>> GetStudySessionsBySubject(string subject);
 }

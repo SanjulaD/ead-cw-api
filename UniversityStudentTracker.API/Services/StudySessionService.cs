@@ -31,4 +31,9 @@ public class StudySessionService : IStudySessionInterface
     {
         return await _studySessionInterface.DeleteAsync(id);
     }
+
+    public async Task<IEnumerable<StudySession>> GetStudySessionsBySubject(string subject)
+    {
+        return await _studySessionInterface.GetStudySessionsBySubject(subject);
+    }
 }
