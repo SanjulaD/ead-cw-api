@@ -1,6 +1,6 @@
-namespace UniversityStudentTracker.API.Models.Domains;
+namespace UniversityStudentTracker.API.Models.DTO.Prediction;
 
-public class Prediction
+public class PredictionMapDto
 {
     public Guid PredictionID { get; set; }
     public Guid UserID { get; set; }

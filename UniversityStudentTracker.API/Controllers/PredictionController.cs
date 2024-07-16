@@ -15,17 +15,20 @@ public class PredictionController : ControllerBase
 {
     private readonly BreakService _breakService;
     private readonly HttpClient _httpClient;
+    private readonly ILogger _logger;
     private readonly IMapper _mapper;
     private readonly PredictionService _predictionService;
     private readonly StudySessionService _studySessionService;
 
     public PredictionController(IMapper mapper, IHttpClientFactory httpClientFactory,
-        StudySessionService studySessionService, BreakService breakService, PredictionService predictionService)
+        StudySessionService studySessionService, BreakService breakService, PredictionService predictionService,
+        ILogger<PredictionController> logger)
     {
         _mapper = mapper;
         _studySessionService = studySessionService;
         _breakService = breakService;
         _predictionService = predictionService;
+        _logger = logger;
         _httpClient = httpClientFactory.CreateClient();
         _httpClient.BaseAddress = new Uri("http://localhost:8000");
     }
@@ -55,21 +58,36 @@ public class PredictionController : ControllerBase
             var jsonString = await response.Content.ReadAsStringAsync();
             var predictionResponse = JsonSerializer.Deserialize<PredictionResponseDto>(jsonString);
 
-            var prediction = new Prediction()
+            if (predictionResponse != null)
             {
-                PredictionID = Guid.NewGuid(),
-                Subject = predictionDto.Subject,
-                PredictedGrade = Convert.ToDecimal(predictionResponse.PredictedGrade),
-                PredictedKnowledgeLevel = Convert.ToInt32(predictionResponse.PredictedKnowledgeLevel),
-                PredictionDate = DateTime.UtcNow
-            };
+                var prediction = new Prediction()
+                {
+                    PredictionID = Guid.NewGuid(),
+                    Subject = predictionDto.Subject,
+                    PredictedGrade = predictionResponse.PredictedGrade,
+                    PredictedKnowledgeLevel = Convert.ToInt32(predictionResponse.PredictedKnowledgeLevel),
+                    PredictionDate = DateTime.UtcNow
+                };
 
-            await _predictionService.AddPredictionAsync(prediction);
+                await _predictionService.AddPredictionAsync(prediction);
+            }
+
             return predictionResponse;
         }
         catch (HttpRequestException ex)
         {
             throw new Exception($"Error calling Python service: {ex.Message}");
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var predictionsDomainModel = await _predictionService.GetAllAsync();
+        var preditctionDto = _mapper.Map<List<PredictionMapDto>>(predictionsDomainModel);
+
+        _logger.LogInformation("Retrieved {PredictionCount} prediction.", preditctionDto.Count);
+
+        return Ok(predictionsDomainModel);
     }
 }

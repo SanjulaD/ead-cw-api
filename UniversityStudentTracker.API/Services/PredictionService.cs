@@ -16,4 +16,9 @@ public class PredictionService : IPredictionInterface
     {
         await _predictionInterface.AddPredictionAsync(prediction);
     }
+
+    public async Task<List<Prediction>> GetAllAsync()
+    {
+        return await _predictionInterface.GetAllAsync();
+    }
 }

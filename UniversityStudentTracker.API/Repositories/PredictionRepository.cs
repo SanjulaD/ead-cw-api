@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using UniversityStudentTracker.API.Contexts;
 using UniversityStudentTracker.API.Models.Domains;
 
@@ -19,5 +20,14 @@ public class PredictionRepository : IPredictionInterface
         prediction.UserID = _userInterface.GetUserId();
         _studentPerformance.Add(prediction);
         await _studentPerformance.SaveChangesAsync();
+    }
+
+    public async Task<List<Prediction>> GetAllAsync()
+    {
+        var userId = _userInterface.GetUserId();
+
+        return await _studentPerformance.Predictions
+            .Where(b => b.UserID == userId)
+            .ToListAsync();
     }
 }

@@ -5,4 +5,5 @@ namespace UniversityStudentTracker.API.Repositories;
 public interface IPredictionInterface
 {
     Task AddPredictionAsync(Prediction prediction);
+    Task<List<Prediction>> GetAllAsync();
 }

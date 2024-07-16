@@ -20,6 +20,6 @@ public class AutoMapperProfiles : Profile
 
         CreateMap<IdentityUser, UserDto>().ReverseMap();
 
-        CreateMap<PredictionRequestDto, PredictionDto>().ReverseMap();
+        CreateMap<Prediction, PredictionMapDto>().ReverseMap();
     }
 }
